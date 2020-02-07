@@ -1,6 +1,6 @@
 # LICENSE GPL 2.0
 #Set the base image :
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 
 #File Author/Maintainer :
@@ -13,15 +13,15 @@ MAINTAINER XXXXXX <xxxxxx@gmail.com>
 # --》
 # "http://download.oracle.com/otn-pub/java/jdk/$JAVA_VERSION-$BUILD_VERSION/$JDK_HASH_VALUE/jdk-$JAVA_VERSION-linux-x64.tar.gz"
 ###################
-ENV JAVA_VERSION 8u172
-ENV BUILD_VERSION b11
-ENV JAVA_SUB_VERSION 172
-ENV JDK_HASH_VALUE a58eab1ec242421181065cdc37240b08
+ENV JAVA_VERSION 8u241
+ENV BUILD_VERSION b07
+ENV JAVA_SUB_VERSION 241
+ENV JDK_HASH_VALUE 1f5b5a70bf22433b84d0e960903adac8
 
 ##################
 # Gemfire version
 ##################
-ENV GEMFIREVERSION 9.2.0
+ENV GEMFIREVERSION 9.9.1
 
 #Set workdir :
 WORKDIR /opt/pivotal
@@ -46,14 +46,15 @@ RUN apt-get install -y unzip zip
 
 
 #Add gemfire installation file
-ADD ./gemfireproductlist/pivotal-gemfire-$GEMFIREVERSION.zip /opt/pivotal/
+ADD ./gemfireproductlist/pivotal-gemfire-$GEMFIREVERSION.tgz /opt/pivotal/
 
 #Set the username to root :
 USER root
 
 #Install pivotal gemfire :
-RUN unzip pivotal-gemfire-$GEMFIREVERSION.zip && \
-    rm pivotal-gemfire-$GEMFIREVERSION.zip
+#RUN tar -xvzf /opt/pivotal/pivotal-gemfire-$GEMFIREVERSION.tgz
+#&& \
+#    rm /opt/pivotal/pivotal-gemfire-$GEMFIREVERSION.tgz    
 
 #Setup environment variables :
 ENV JAVA_HOME /opt/pivotal/current_java
@@ -66,9 +67,7 @@ ENV CLASSPATH $GEMFIRE/lib/geode-dependencies.jar:$GEMFIRE/lib/gfsh-dependencies
 
 #COPY the start scripts into container
 COPY workdir /opt/pivotal/workdir
-
-# This trustore file is for PCC lab21
-# COPY lab21.truststore lab21.truststore
+RUN chmod +x /opt/pivotal/workdir/*.sh
 
 # Default ports:
 # RMI/JMX 1099
